@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bank connection — callback</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+    code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Bank authorization</h1>
+  <p id="message">Processing…</p>
+  <p id="hint" hidden>Make sure the dashboard dev server is running at <code>http://localhost:5173</code>.</p>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const error = params.get("error") || params.get("error_description");
+    const msg = document.getElementById("message");
+    const hint = document.getElementById("hint");
+    if (error) {
+      msg.textContent = "Authorization failed: " + error;
+      hint.hidden = false;
+      window.location.href = "http://localhost:5173/?tab=banking&error=" + encodeURIComponent(error);
+    } else if (code) {
+      msg.textContent = "Success — returning to your dashboard…";
+      hint.hidden = false;
+      window.location.href = "http://localhost:5173/api/enablebanking/callback?code=" + encodeURIComponent(code);
+    } else {
+      msg.textContent = "No authorization code received.";
+    }
+  </script>
+</body>
+</html>
